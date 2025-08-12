@@ -14,7 +14,7 @@ import { GraphQLProvider } from "@/components/providers/apollo-provider"
 export const metadata: Metadata = {
   title: "AI Chatbot App",
   description: "Intelligent chatbot powered by AI",
-  generator: "v0.dev",
+  generator: "Min.dev",
 }
 
 export default function RootLayout({
@@ -33,10 +33,9 @@ html {
 }
         `}</style>
       </head>
-      <body>
+      <body className="bg-gradient-to-br from-gray-900 via-slate-900 to-black min-h-screen">
         <AuthProvider>
           <AuthGuard>
-            {/* Wrapped children with GraphQL provider */}
             <GraphQLProvider>{children}</GraphQLProvider>
           </AuthGuard>
         </AuthProvider>

@@ -88,18 +88,20 @@ export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
   }
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-gray-700/50 bg-gradient-to-r from-gray-800/80 to-slate-800/80 p-4 backdrop-blur-sm">
       {error && (
-        <Alert variant="destructive" className="mb-4">
+        <Alert
+          variant="destructive"
+          className="mb-4 bg-gradient-to-r from-red-900/30 to-red-800/30 border-red-700/50 text-red-200 backdrop-blur-sm"
+        >
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{String(error)}</AlertDescription>
         </Alert>
       )}
 
-      {/* Added optimistic message preview */}
       {optimisticMessage && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center space-x-2 text-sm text-blue-700">
+        <div className="mb-4 p-3 bg-gradient-to-r from-blue-900/30 to-blue-800/30 border border-blue-700/50 rounded-lg backdrop-blur-sm">
+          <div className="flex items-center space-x-2 text-sm text-blue-300">
             <Clock className="h-4 w-4 animate-pulse" />
             <span>Sending: "{String(optimisticMessage)}"</span>
           </div>
@@ -112,10 +114,14 @@ export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type your message..."
-          className="flex-1 min-h-[60px] max-h-[120px] resize-none"
+          className="flex-1 min-h-[60px] max-h-[120px] resize-none bg-gradient-to-r from-gray-700 to-slate-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 backdrop-blur-sm"
           disabled={isLoading}
         />
-        <Button onClick={handleSend} disabled={!message.trim() || isLoading} className="self-end">
+        <Button
+          onClick={handleSend}
+          disabled={!message.trim() || isLoading}
+          className="self-end bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg"
+        >
           {isLoading ? (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
           ) : (
@@ -123,7 +129,7 @@ export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
           )}
         </Button>
       </div>
-      <p className="text-xs text-gray-500 mt-2">
+      <p className="text-xs text-gray-400 mt-2">
         Press Enter to send, Shift+Enter for new line
         {isLoading && " • Waiting for AI response..."}
       </p>

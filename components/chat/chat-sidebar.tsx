@@ -102,12 +102,12 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
 
   if (loading) {
     return (
-      <div className="w-80 bg-white border-r border-gray-200 p-4">
+      <div className="w-80 bg-gradient-to-b from-gray-800 via-slate-800 to-gray-900 border-r border-gray-700/50 p-4 backdrop-blur-sm">
         <div className="animate-pulse space-y-4">
-          <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="h-10 bg-gray-700 rounded"></div>
           <div className="space-y-2">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded"></div>
+              <div key={i} className="h-12 bg-gray-700 rounded"></div>
             ))}
           </div>
         </div>
@@ -116,12 +116,16 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
   }
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-80 bg-gradient-to-b from-gray-800 via-slate-800 to-gray-900 border-r border-gray-700/50 flex flex-col backdrop-blur-sm">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-700/50 bg-gradient-to-r from-gray-800/80 to-slate-800/80">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-gray-900">Chats</h2>
-          <Button size="sm" onClick={() => setIsCreating(true)} className="flex items-center space-x-1">
+          <h2 className="font-semibold text-transparent bg-gradient-to-r from-white to-gray-300 bg-clip-text">Chats</h2>
+          <Button
+            size="sm"
+            onClick={() => setIsCreating(true)}
+            className="flex items-center space-x-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg"
+          >
             <Plus className="h-4 w-4" />
             <span>New</span>
           </Button>
@@ -130,24 +134,27 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
         <div className="flex items-center space-x-2 mb-3">
           {connectionStatus === "connected" ? (
             <>
-              <Wifi className="h-3 w-3 text-green-500" />
-              <span className="text-xs text-green-600">Live updates</span>
+              <Wifi className="h-3 w-3 text-green-400" />
+              <span className="text-xs text-green-300">Live updates</span>
             </>
           ) : connectionStatus === "connecting" ? (
             <>
-              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-yellow-500"></div>
-              <span className="text-xs text-yellow-600">Connecting...</span>
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-yellow-400"></div>
+              <span className="text-xs text-yellow-300">Connecting...</span>
             </>
           ) : (
             <>
-              <WifiOff className="h-3 w-3 text-red-500" />
-              <span className="text-xs text-red-600">Offline</span>
+              <WifiOff className="h-3 w-3 text-red-400" />
+              <span className="text-xs text-red-300">Offline</span>
             </>
           )}
         </div>
 
         {error && (
-          <Alert variant="destructive" className="mb-3">
+          <Alert
+            variant="destructive"
+            className="mb-3 bg-gradient-to-r from-red-900/30 to-red-800/30 border-red-700/50 text-red-200 backdrop-blur-sm"
+          >
             <AlertDescription className="text-xs">
               Connection error. Chat list may not update automatically.
             </AlertDescription>
@@ -169,9 +176,15 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                 }
               }}
               autoFocus
+              className="bg-gradient-to-r from-gray-700 to-slate-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
             />
             <div className="flex space-x-2">
-              <Button size="sm" onClick={handleCreateChat} disabled={!newChatTitle.trim()}>
+              <Button
+                size="sm"
+                onClick={handleCreateChat}
+                disabled={!newChatTitle.trim()}
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+              >
                 Create
               </Button>
               <Button
@@ -181,6 +194,7 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                   setIsCreating(false)
                   setNewChatTitle("")
                 }}
+                className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-gray-700 hover:to-slate-700"
               >
                 Cancel
               </Button>
@@ -195,8 +209,10 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
           {data?.chats?.map((chat: any) => (
             <Card
               key={chat.id}
-              className={`p-3 cursor-pointer transition-colors hover:bg-gray-50 group ${
-                selectedChatId === chat.id ? "bg-blue-50 border-blue-200" : ""
+              className={`p-3 cursor-pointer transition-all duration-200 hover:bg-gradient-to-r hover:from-gray-700/50 hover:to-slate-700/50 group border-gray-700/50 backdrop-blur-sm ${
+                selectedChatId === chat.id
+                  ? "bg-gradient-to-r from-blue-900/50 to-blue-800/50 border-blue-700/50 shadow-lg"
+                  : "bg-gradient-to-r from-gray-800/50 to-slate-800/50"
               }`}
               onClick={() => onChatSelect(chat.id)}
             >
@@ -215,19 +231,19 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                         }
                       }}
                       onBlur={() => handleUpdateTitle(chat.id)}
-                      className="h-6 text-sm"
+                      className="h-6 text-sm bg-gradient-to-r from-gray-700 to-slate-700 border-gray-600 text-white"
                       autoFocus
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
-                    <span className="text-sm font-medium text-gray-900 truncate">{chat.title}</span>
+                    <span className="text-sm font-medium text-white truncate">{chat.title}</span>
                   )}
                 </div>
                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-6 w-6 p-0"
+                    className="h-6 w-6 p-0 text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-gray-600 hover:to-slate-600"
                     onClick={(e) => startEditing(chat.id, chat.title, e)}
                   >
                     <Edit2 className="h-3 w-3" />
@@ -235,21 +251,21 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                    className="h-6 w-6 p-0 text-red-400 hover:text-red-300 hover:bg-gradient-to-r hover:from-gray-600 hover:to-slate-600"
                     onClick={(e) => handleDeleteChat(chat.id, e)}
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
               </div>
-              <div className="mt-1 text-xs text-gray-500">
+              <div className="mt-1 text-xs text-gray-400">
                 {chat.messages_aggregate?.aggregate?.count || 0} messages
               </div>
             </Card>
           ))}
 
           {(!data?.chats || data.chats.length === 0) && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-400">
               <MessageCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No chats yet</p>
               <p className="text-xs">Create your first chat to get started</p>

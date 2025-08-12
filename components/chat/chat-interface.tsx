@@ -13,10 +13,10 @@ export function ChatInterface() {
     <>
       <ConnectionStatus />
 
-      <div className="flex h-[calc(100vh-80px)] bg-gray-50">
+      <div className="flex h-[calc(100vh-80px)] bg-gradient-to-br from-gray-900 via-slate-900 to-black">
         <ChatSidebar selectedChatId={selectedChatId} onChatSelect={setSelectedChatId} />
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col bg-gradient-to-b from-gray-900/50 to-slate-900/50 backdrop-blur-sm">
           <MessageList chatId={selectedChatId} />
           <MessageInput
             chatId={selectedChatId}
