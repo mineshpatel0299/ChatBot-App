@@ -53,9 +53,20 @@ export const apolloClient = new ApolloClient({
   defaultOptions: {
     watchQuery: {
       errorPolicy: "all",
+      // Disable automatic persisted queries
+      context: {
+        useGETForQueries: false,
+      },
     },
     query: {
       errorPolicy: "all",
+      // Disable automatic persisted queries
+      context: {
+        useGETForQueries: false,
+      },
     },
   },
+  // Disable persisted queries globally
+  ssrMode: typeof window === "undefined",
+  connectToDevTools: process.env.NODE_ENV === "development",
 })
