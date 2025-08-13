@@ -1,0 +1,34 @@
+# Hasura Actions Configuration
+# This should be applied through the Hasura Console or CLI
+
+actions:
+  - name: sendMessage
+    definition:
+      kind: synchronous
+      handler: https://your-n8n-instance.com/webhook/chatbot-message
+      forward_client_headers: true
+      headers:
+        - name: x-hasura-webhook-secret
+          value_from_env: N8N_WEBHOOK_SECRET
+    permissions:
+      - role: user
+    comment: Sends a message to the chatbot and returns the AI response
+
+custom_types:
+  input_objects:
+    - name: SendMessageInput
+      fields:
+        - name: chat_id
+          type: uuid!
+        - name: message
+          type: String!
+  
+  objects:
+    - name: SendMessageOutput
+      fields:
+        - name: success
+          type: Boolean!
+        - name: message
+          type: String!
+        - name: response_id
+          type: uuid

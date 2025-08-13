@@ -1,0 +1,70 @@
+-- Enable Row Level Security on chats table
+ALTER TABLE chats ENABLE ROW LEVEL SECURITY;
+
+-- Enable Row Level Security on messages table
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their own chats" ON chats;
+DROP POLICY IF EXISTS "Users can insert their own chats" ON chats;
+DROP POLICY IF EXISTS "Users can update their own chats" ON chats;
+DROP POLICY IF EXISTS "Users can delete their own chats" ON chats;
+
+DROP POLICY IF EXISTS "Users can view messages from their chats" ON messages;
+DROP POLICY IF EXISTS "Users can insert messages to their chats" ON messages;
+DROP POLICY IF EXISTS "Users can update their own messages" ON messages;
+DROP POLICY IF EXISTS "Users can delete their own messages" ON messages;
+
+-- Create RLS policies for chats table
+CREATE POLICY "Users can view their own chats" ON chats
+    FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own chats" ON chats
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own chats" ON chats
+    FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own chats" ON chats
+    FOR DELETE USING (auth.uid() = user_id);
+
+-- Create RLS policies for messages table
+CREATE POLICY "Users can view messages from their chats" ON messages
+    FOR SELECT USING (
+        auth.uid() = user_id OR 
+        EXISTS (
+            SELECT 1 FROM chats 
+            WHERE chats.id = messages.chat_id 
+            AND chats.user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Users can insert messages to their chats" ON messages
+    FOR INSERT WITH CHECK (
+        auth.uid() = user_id AND
+        EXISTS (
+            SELECT 1 FROM chats 
+            WHERE chats.id = messages.chat_id 
+            AND chats.user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Users can update their own messages" ON messages
+    FOR UPDATE USING (
+        auth.uid() = user_id AND
+        EXISTS (
+            SELECT 1 FROM chats 
+            WHERE chats.id = messages.chat_id 
+            AND chats.user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Users can delete their own messages" ON messages
+    FOR DELETE USING (
+        auth.uid() = user_id AND
+        EXISTS (
+            SELECT 1 FROM chats 
+            WHERE chats.id = messages.chat_id 
+            AND chats.user_id = auth.uid()
+        )
+    );
