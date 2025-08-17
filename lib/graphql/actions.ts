@@ -1,24 +1,22 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 // Hasura Action for sending messages to chatbot
 export const SEND_MESSAGE_ACTION = gql`
   mutation SendMessage($input: SendMessageInput!) {
     sendMessage(input: $input) {
       success
-      message
-      response_id
+      reply
     }
   }
-`
+`;
 
 // Types for the action
 export interface SendMessageInput {
-  chat_id: string
-  message: string
+  chat_id: string;
+  content: string;
 }
 
 export interface SendMessageOutput {
-  success: boolean
-  message: string
-  response_id?: string
+  success: boolean;
+  reply: string;
 }

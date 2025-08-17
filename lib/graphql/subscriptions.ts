@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 // Real-time subscriptions for messages
 export const SUBSCRIBE_TO_CHAT_MESSAGES = gql`
@@ -9,20 +9,19 @@ export const SUBSCRIBE_TO_CHAT_MESSAGES = gql`
     ) {
       id
       content
-      role
+      sender_type
       created_at
     }
   }
-`
+`;
 
 // Real-time subscriptions for chats
 export const SUBSCRIBE_TO_USER_CHATS = gql`
   subscription SubscribeToUserChats {
-    chats(order_by: { updated_at: desc }) {
+    chats(order_by: { created_at: desc }) {
       id
       title
       created_at
-      updated_at
       messages_aggregate {
         aggregate {
           count
@@ -30,4 +29,4 @@ export const SUBSCRIBE_TO_USER_CHATS = gql`
       }
     }
   }
-`
+`;

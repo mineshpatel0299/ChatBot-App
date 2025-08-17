@@ -1,13 +1,12 @@
-import { gql } from "@apollo/client"
+import { gql } from "@apollo/client";
 
 // Chat queries
 export const GET_USER_CHATS = gql`
   query GetUserChats {
-    chats(order_by: { updated_at: desc }) {
+    chats(order_by: { created_at: desc }) {
       id
       title
       created_at
-      updated_at
       messages_aggregate {
         aggregate {
           count
@@ -15,7 +14,7 @@ export const GET_USER_CHATS = gql`
       }
     }
   }
-`
+`;
 
 export const GET_CHAT_WITH_MESSAGES = gql`
   query GetChatWithMessages($chatId: uuid!) {
@@ -23,16 +22,15 @@ export const GET_CHAT_WITH_MESSAGES = gql`
       id
       title
       created_at
-      updated_at
       messages(order_by: { created_at: asc }) {
         id
         content
-        role
+        sender_type
         created_at
       }
     }
   }
-`
+`;
 
 // Message queries
 export const GET_CHAT_MESSAGES = gql`
@@ -43,8 +41,8 @@ export const GET_CHAT_MESSAGES = gql`
     ) {
       id
       content
-      role
+      sender_type
       created_at
     }
   }
-`
+`;

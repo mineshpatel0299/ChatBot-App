@@ -1,50 +1,66 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useSubscription, useMutation } from "@apollo/client"
-import { useUserData } from "@nhost/nextjs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, MessageCircle, Trash2, Edit2, Wifi, WifiOff } from "lucide-react"
-import { SUBSCRIBE_TO_USER_CHATS } from "@/lib/graphql/subscriptions"
-import { CREATE_CHAT, DELETE_CHAT, UPDATE_CHAT_TITLE } from "@/lib/graphql/mutations"
+import { useState } from "react";
+import { useSubscription, useMutation } from "@apollo/client";
+import { useUserData } from "@nhost/nextjs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Plus,
+  MessageCircle,
+  Trash2,
+  Edit2,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
+import { SUBSCRIBE_TO_USER_CHATS } from "@/lib/graphql/subscriptions";
+import {
+  CREATE_CHAT,
+  DELETE_CHAT,
+  UPDATE_CHAT_TITLE,
+} from "@/lib/graphql/mutations";
 
 interface ChatSidebarProps {
-  selectedChatId?: string
-  onChatSelect: (chatId: string) => void
+  selectedChatId?: string;
+  onChatSelect: (chatId: string) => void;
 }
 
-export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) {
-  const user = useUserData()
-  const [isCreating, setIsCreating] = useState(false)
-  const [newChatTitle, setNewChatTitle] = useState("")
-  const [editingChatId, setEditingChatId] = useState<string | null>(null)
-  const [editTitle, setEditTitle] = useState("")
-  const [connectionStatus, setConnectionStatus] = useState<"connected" | "connecting" | "disconnected">("connecting")
+export function ChatSidebar({
+  selectedChatId,
+  onChatSelect,
+}: ChatSidebarProps) {
+  const user = useUserData();
+  const [isCreating, setIsCreating] = useState(false);
+  const [newChatTitle, setNewChatTitle] = useState("");
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [connectionStatus, setConnectionStatus] = useState<
+    "connected" | "connecting" | "disconnected"
+  >("connecting");
 
   const { data, loading, error } = useSubscription(SUBSCRIBE_TO_USER_CHATS, {
     onSubscriptionData: () => {
-      setConnectionStatus("connected")
+      setConnectionStatus("connected");
     },
     onSubscriptionComplete: () => {
-      setConnectionStatus("disconnected")
+      setConnectionStatus("disconnected");
     },
     onError: () => {
-      setConnectionStatus("disconnected")
+      setConnectionStatus("disconnected");
     },
-  })
+  });
 
-  const [createChat] = useMutation(CREATE_CHAT)
-  const [deleteChat] = useMutation(DELETE_CHAT)
-  const [updateChatTitle] = useMutation(UPDATE_CHAT_TITLE)
+  const [createChat] = useMutation(CREATE_CHAT);
+  const [deleteChat] = useMutation(DELETE_CHAT);
+  const [updateChatTitle] = useMutation(UPDATE_CHAT_TITLE);
 
   const handleCreateChat = async () => {
-    if (!user?.id || !newChatTitle.trim()) return
+    if (!user?.id || !newChatTitle.trim()) return;
 
     try {
       const result = await createChat({
@@ -52,33 +68,33 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
           title: newChatTitle.trim(),
           userId: user.id,
         },
-      })
+      });
 
       if (result.data?.insert_chats_one) {
-        onChatSelect(result.data.insert_chats_one.id)
-        setNewChatTitle("")
-        setIsCreating(false)
+        onChatSelect(result.data.insert_chats_one.id);
+        setNewChatTitle("");
+        setIsCreating(false);
       }
     } catch (error) {
-      console.error("Error creating chat:", error)
+      console.error("Error creating chat:", error);
     }
-  }
+  };
 
   const handleDeleteChat = async (chatId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+    e.stopPropagation();
 
     try {
-      await deleteChat({ variables: { chatId } })
+      await deleteChat({ variables: { chatId } });
       if (selectedChatId === chatId) {
-        onChatSelect("")
+        onChatSelect("");
       }
     } catch (error) {
-      console.error("Error deleting chat:", error)
+      console.error("Error deleting chat:", error);
     }
-  }
+  };
 
   const handleUpdateTitle = async (chatId: string) => {
-    if (!editTitle.trim()) return
+    if (!editTitle.trim()) return;
 
     try {
       await updateChatTitle({
@@ -86,19 +102,23 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
           chatId,
           title: editTitle.trim(),
         },
-      })
-      setEditingChatId(null)
-      setEditTitle("")
+      });
+      setEditingChatId(null);
+      setEditTitle("");
     } catch (error) {
-      console.error("Error updating chat title:", error)
+      console.error("Error updating chat title:", error);
     }
-  }
+  };
 
-  const startEditing = (chatId: string, currentTitle: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    setEditingChatId(chatId)
-    setEditTitle(currentTitle)
-  }
+  const startEditing = (
+    chatId: string,
+    currentTitle: string,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    setEditingChatId(chatId);
+    setEditTitle(currentTitle);
+  };
 
   if (loading) {
     return (
@@ -112,7 +132,7 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -120,7 +140,9 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
       {/* Header */}
       <div className="p-4 border-b border-gray-700/50 bg-gradient-to-r from-gray-800/80 to-slate-800/80">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-transparent bg-gradient-to-r from-white to-gray-300 bg-clip-text">Chats</h2>
+          <h2 className="font-semibold text-transparent bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+            Chats
+          </h2>
           <Button
             size="sm"
             onClick={() => setIsCreating(true)}
@@ -169,10 +191,10 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
               value={newChatTitle}
               onChange={(e) => setNewChatTitle(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") handleCreateChat()
+                if (e.key === "Enter") handleCreateChat();
                 if (e.key === "Escape") {
-                  setIsCreating(false)
-                  setNewChatTitle("")
+                  setIsCreating(false);
+                  setNewChatTitle("");
                 }
               }}
               autoFocus
@@ -191,8 +213,8 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                 size="sm"
                 variant="ghost"
                 onClick={() => {
-                  setIsCreating(false)
-                  setNewChatTitle("")
+                  setIsCreating(false);
+                  setNewChatTitle("");
                 }}
                 className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-gray-700 hover:to-slate-700"
               >
@@ -224,10 +246,10 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleUpdateTitle(chat.id)
+                        if (e.key === "Enter") handleUpdateTitle(chat.id);
                         if (e.key === "Escape") {
-                          setEditingChatId(null)
-                          setEditTitle("")
+                          setEditingChatId(null);
+                          setEditTitle("");
                         }
                       }}
                       onBlur={() => handleUpdateTitle(chat.id)}
@@ -236,7 +258,9 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
-                    <span className="text-sm font-medium text-white truncate">{chat.title}</span>
+                    <span className="text-sm font-medium text-white truncate">
+                      {chat.title}
+                    </span>
                   )}
                 </div>
                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -274,5 +298,5 @@ export function ChatSidebar({ selectedChatId, onChatSelect }: ChatSidebarProps) 
         </div>
       </ScrollArea>
     </div>
-  )
+  );
 }

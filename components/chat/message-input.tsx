@@ -1,57 +1,57 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useMutation } from "@apollo/client"
-import { useUserData } from "@nhost/nextjs"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Send, AlertCircle, Clock } from "lucide-react"
-import { INSERT_MESSAGE } from "@/lib/graphql/mutations"
-import { SEND_MESSAGE_ACTION } from "@/lib/graphql/actions"
-import type { SendMessageInput } from "@/lib/graphql/actions"
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { useUserData } from "@nhost/nextjs";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Send, AlertCircle, Clock } from "lucide-react";
+import { INSERT_MESSAGE } from "@/lib/graphql/mutations";
+import { SEND_MESSAGE_ACTION } from "@/lib/graphql/actions";
+import type { SendMessageInput } from "@/lib/graphql/actions";
 
 interface MessageInputProps {
-  chatId: string
-  onMessageSent?: () => void
+  chatId: string;
+  onMessageSent?: () => void;
 }
 
 export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
-  const [message, setMessage] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   // Added optimistic message state for better UX
-  const [optimisticMessage, setOptimisticMessage] = useState<string | null>(null)
-  const user = useUserData()
-  const [insertMessage] = useMutation(INSERT_MESSAGE)
-  const [sendMessageAction] = useMutation(SEND_MESSAGE_ACTION)
+  const [optimisticMessage, setOptimisticMessage] = useState<string | null>(
+    null
+  );
+  const user = useUserData();
+  const [insertMessage] = useMutation(INSERT_MESSAGE);
+  const [sendMessageAction] = useMutation(SEND_MESSAGE_ACTION);
 
   const handleSend = async () => {
-    if (!message.trim() || !user?.id || !chatId || isLoading) return
+    if (!message.trim() || !user?.id || !chatId || isLoading) return;
 
-    setIsLoading(true)
-    setError(null)
-    const messageContent = message.trim()
-    setMessage("")
+    setIsLoading(true);
+    setError(null);
+    const messageContent = message.trim();
+    setMessage("");
     // Set optimistic message for immediate UI feedback
-    setOptimisticMessage(messageContent)
+    setOptimisticMessage(messageContent);
 
     try {
       // Insert user message first
       await insertMessage({
         variables: {
-          chatId,
-          userId: user.id,
+          chat_id: chatId,
           content: messageContent,
-          role: "user",
         },
-      })
+      });
 
       const actionInput: SendMessageInput = {
         chat_id: chatId,
-        message: messageContent,
+        content: messageContent,
       }
 
       const result = await sendMessageAction({
@@ -63,28 +63,30 @@ export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
       }
 
       // Clear optimistic message on success
-      setOptimisticMessage(null)
-      onMessageSent?.()
+      setOptimisticMessage(null);
+      onMessageSent?.();
     } catch (error) {
-      console.error("Error sending message:", error)
-      setError(error instanceof Error ? error.message : "Failed to send message")
-      setMessage(messageContent) // Restore message on error
+      console.error("Error sending message:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to send message"
+      );
+      setMessage(messageContent); // Restore message on error
       // Clear optimistic message on error
-      setOptimisticMessage(null)
+      setOptimisticMessage(null);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
+      e.preventDefault();
+      handleSend();
     }
-  }
+  };
 
   if (!chatId) {
-    return null
+    return null;
   }
 
   return (
@@ -134,5 +136,5 @@ export function MessageInput({ chatId, onMessageSent }: MessageInputProps) {
         {isLoading && " • Waiting for AI response..."}
       </p>
     </div>
-  )
+  );
 }

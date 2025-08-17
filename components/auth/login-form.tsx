@@ -1,29 +1,34 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useSignInEmailPassword } from "@nhost/nextjs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useState } from "react";
+import { useSignInEmailPassword, useUserData } from "@nhost/nextjs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LoginFormProps {
-  onToggleMode: () => void
+  onToggleMode: () => void;
 }
 
 export function LoginForm({ onToggleMode }: LoginFormProps) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const { signInEmailPassword, isLoading, error } = useSignInEmailPassword()
-
+  const { signInEmailPassword, isLoading, error } = useSignInEmailPassword();
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await signInEmailPassword(email, password)
-  }
+    e.preventDefault();
+    await signInEmailPassword(email, password);
+  };
 
   return (
     <Card className="w-full max-w-md bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 border border-gray-700/50 backdrop-blur-sm shadow-2xl">
@@ -69,7 +74,9 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
               className="bg-gradient-to-r from-red-900/30 to-red-800/30 border-red-700/50 text-red-200 backdrop-blur-sm"
             >
               <AlertDescription>
-                {typeof error === "object" && error?.message ? error.message : String(error)}
+                {typeof error === "object" && error?.message
+                  ? error.message
+                  : String(error)}
               </AlertDescription>
             </Alert>
           )}
@@ -91,5 +98,5 @@ export function LoginForm({ onToggleMode }: LoginFormProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

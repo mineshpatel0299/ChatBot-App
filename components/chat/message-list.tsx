@@ -15,7 +15,7 @@ interface MessageListProps {
 interface Message {
   id: string
   content: string
-  role: "user" | "assistant"
+  sender_type: "user" | "bot"
   created_at: string
 }
 
@@ -128,17 +128,17 @@ export function MessageList({ chatId }: MessageListProps) {
             </div>
           ) : (
             messages.map((message) => (
-              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={message.id} className={`flex ${message.sender_type === "user" ? "justify-end" : "justify-start"}`}>
                 <Card
                   className={`max-w-[70%] p-3 backdrop-blur-sm shadow-lg ${
-                    message.role === "user"
+                    message.sender_type === "user"
                       ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white border-blue-500/50"
                       : "bg-gradient-to-r from-gray-800/80 to-slate-800/80 border-gray-700/50 text-white"
                   }`}
                 >
                   <div className="flex items-start space-x-2">
                     <div className="flex-shrink-0">
-                      {message.role === "user" ? (
+                      {message.sender_type === "user" ? (
                         <User className="h-4 w-4 mt-0.5" />
                       ) : (
                         <Bot className="h-4 w-4 mt-0.5 text-blue-400" />
@@ -146,7 +146,7 @@ export function MessageList({ chatId }: MessageListProps) {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      <p className={`text-xs mt-1 ${message.role === "user" ? "text-blue-100" : "text-gray-400"}`}>
+                      <p className={`text-xs mt-1 ${message.sender_type === "user" ? "text-blue-100" : "text-gray-400"}`}>
                         {new Date(message.created_at).toLocaleTimeString()}
                       </p>
                     </div>

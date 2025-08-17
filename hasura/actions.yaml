@@ -22,6 +22,8 @@ custom_types:
           type: uuid!
         - name: message
           type: String!
+
+          
   
   objects:
     - name: SendMessageOutput
