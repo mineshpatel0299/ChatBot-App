@@ -41,7 +41,7 @@ export function ChatLayout({ children }: ChatLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
+      <main>{children}</main>
     </div>
   )
 }
