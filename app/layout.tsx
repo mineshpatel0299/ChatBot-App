@@ -33,7 +33,7 @@ html {
 }
         `}</style>
       </head>
-      <body className="bg-gradient-to-br from-gray-900 via-slate-900 to-black min-h-screen overflow-hidden ">
+      <body className="bg-gradient-to-br from-gray-900 via-slate-900 to-black min-h-screen">
         <AuthProvider>
           <AuthGuard>
             <GraphQLProvider>{children}</GraphQLProvider>
